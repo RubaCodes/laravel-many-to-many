@@ -26,10 +26,10 @@ class TagsController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
+    // public function create()
+    // {
+    //     //
+    // }
 
     /**
      * Store a newly created resource in storage.
@@ -71,9 +71,9 @@ class TagsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Tag $tag)
     {
-        //
+        return view('admin.tags.edit',compact('tag'));
     }
 
     /**
@@ -83,9 +83,17 @@ class TagsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Tag $tag)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:50|unique:categories,name',
+        ]);
+        $data = $request->all();
+
+        $tag->name = $data['name'];
+        $tag->slug = Str::of($tag->name)->slug('-');
+        $tag->save();
+        return redirect()->route('admin.tags.index');
     }
 
     /**
@@ -97,6 +105,6 @@ class TagsController extends Controller
     public function destroy(Tag $tag)
     {
         $tag->delete();
-        return redirect()-> route('admin.tags.index');
+        return redirect()->route('admin.tags.index');
     }
 }
