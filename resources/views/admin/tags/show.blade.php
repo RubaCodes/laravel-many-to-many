@@ -5,17 +5,17 @@
 <div class="container margin-auto">
     <div class="card">
         <div class="card-header text-uppercase ">
-            Descrizione cateoria
+            Descrizione Tag
         </div>
         <div class="card-body">
             <div>
-                <h2 class="text-primary">Nome categoria</h2>
-                {{$category->name}}
+                <h2 class="text-primary">Nome Tag</h2>
+                {{$tag->name}}
             </div>
             <div class="py-4">
-                <h2 class="text-primary">Post in cui e' inclusa:</h2>
+                <h2 class="text-primary">Post in cui e' incluso il #tag:</h2>
                 <ul>
-                    @foreach ($category->posts as $post)
+                    @foreach ($tag->posts as $post)
                     <li>
                         id: <a href="{{route('admin.posts.show', $post)}}">{{$post->id}}</a> , titolo: {{$post->title}}
                     </li>
