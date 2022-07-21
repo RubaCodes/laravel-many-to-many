@@ -25,6 +25,7 @@
                 <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
 
+                {{-- Select Categories --}}
                 <label for="category_id">Seleziona la categoria</label>
                 <select class="form-control @error('content') is-invalid @enderror" name="category_id" id="category_id">
                     <option value="">Seleziona Categoria</option>
@@ -37,6 +38,15 @@
                 <div class="alert alert-danger">{{ $message }}</div>
                 @enderror
 
+                {{-- Checkbox group #tags --}}
+                @foreach ($tags as $tag)
+                <div class="form-check form-check-inline pt-4">
+                    {{-- tags per far arrivare un array --}}
+                    <input class="form-check-input" type="checkbox" id="{{$tag->slug}}" value="{{$tag->id}}"
+                        {{in_array($tag->id, old('tags', $postTags)) ? 'checked' : ''}} name="tags[]">
+                    <label class="form-check-label" for="{{$tag->slug}}">{{$tag->name}}</label>
+                </div>
+                @endforeach
                 <div class="form-group form-check pt-4">
                     <input type="checkbox" name="published" class="form-check-input" id="published" {{old('published',
                         $post->published)

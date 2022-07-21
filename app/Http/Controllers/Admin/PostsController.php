@@ -93,7 +93,14 @@ class PostsController extends Controller
     public function edit(Post $post)
     {
         $categories = Category::all();
-        return view('admin.posts.edit' , compact('post','categories'));
+        //gestione dei tag per l'old
+        $tags = Tag::all();
+        //cast da collection to array 
+        $postTags = $post->tags->map(function ($item) {
+            return $item->id;
+        })->toArray();
+
+        return view('admin.posts.edit' , compact('post','categories','tags','postTags'));
     }
 
     /**
@@ -110,6 +117,7 @@ class PostsController extends Controller
             "title" => "string|required|max:255",
             "content" => "string|required|max:65535",
             'category_id' => 'nullable|exists:categories,id',
+            'tags' => 'nullable|exists:tags,id',
             "published" => "sometimes|accepted"
             
         ]);
@@ -121,6 +129,12 @@ class PostsController extends Controller
         $post->category_id = $data['category_id'];
         $post->slug = Str::of($data['title'])->slug('-');
         $post->save();
+
+        //sync su pivot
+        //se viene passato l'array allora vale l'array stesso altrimenti vuoto e sync
+        $tags = isset($data['tags']) ? $data['tags'] : [];
+        $post->tags()->sync($tags);
+        
         return redirect()->route('admin.posts.show', $post->id);
         
     }
