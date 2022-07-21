@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class TagsController extends Controller
 {
@@ -14,7 +16,9 @@ class TagsController extends Controller
      */
     public function index()
     {
-        //
+        $tags = Tag::all();
+
+        return view('admin.tags.index', compact('tags'));
     }
 
     /**
@@ -35,7 +39,19 @@ class TagsController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|string|max:50|unique:categories,name',
+        ]);
+        $data = $request->all();
+
+        // creazione della categoria
+        $newTag = new Tag();
+        $newTag->name = $data['name'];
+        $newTag->slug = Str::of($newTag->name)->slug('-');
+        $newTag->save();
+
+        // redirect all'index delle categorie
+        return redirect()->route('admin.tags.index');
     }
 
     /**

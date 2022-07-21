@@ -49,6 +49,11 @@
                             <a href="{{route('admin.categories.index')}}">Indice Categorie</a>
                         </li>
                     </ul>
+                    <ul class="navbar-nav mr-auto">
+                        <li class="px-3">
+                            <a href="{{route('admin.tags.index')}}">Indice Tags</a>
+                        </li>
+                    </ul>
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
