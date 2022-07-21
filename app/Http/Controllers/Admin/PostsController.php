@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Post;
+use App\Tag;
 use App\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -32,7 +33,8 @@ class PostsController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view('admin.posts.create', compact('categories'));
+        $tags = Tag::all();
+        return view('admin.posts.create', compact('categories','tags'));
     }
 
     /**
@@ -48,6 +50,7 @@ class PostsController extends Controller
             "title" => "string|required|max:255",
             "content" => "string|required|max:65535",
             'category_id' => 'nullable|exists:categories,id',
+            'tags' => 'nullable|exists:tags,id',
             "published" => "sometimes|accepted"
         ]);
         //store
@@ -59,6 +62,12 @@ class PostsController extends Controller
         $newPost->category_id = $data['category_id'];
         $newPost->slug = Str::of($data['title'])->slug('-');
         $newPost->save();
+
+        //sync su pivot
+        if(isset($data['tags'])){
+            $newPost->tags()->sync($data['tags']);
+        }
+        //return
         return redirect()->route('admin.posts.show', $newPost->id);
         
     }
